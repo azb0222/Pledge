@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Button, Image } from 'react-native';
 import { useState } from 'react'
 
 const EventList = ({ events }) => {
@@ -23,6 +23,14 @@ const EventList = ({ events }) => {
       <Text style={styles.eventDate}>{item.date}</Text>
       <Text style={styles.eventAttending}>{item.attending} attending</Text>
     </View>
+
+
+    <Image
+        style={styles.logo}
+        source={{
+          uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
+        }}
+      />
 
 
       <View style={styles.attendingContainer}>

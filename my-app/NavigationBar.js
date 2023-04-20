@@ -17,11 +17,8 @@ const NavigationBar = () => {
         <Button title="Hot" />
         <Button title="New" />
       </HStack>
-
       </View>
- 
       </HStack>
-         
       </View>
     
   );
