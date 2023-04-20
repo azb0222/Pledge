@@ -1,7 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, SafeAreaView} from 'react-native';
-// import { NativeBaseConfigProvider } from 'native-base';
-import  {NativeBaseConfigProvider}  from 'native-base';
 import EventList from './EventList';
 import NavigationBar from './NavigationBar';
 const eventData = [
@@ -69,15 +67,13 @@ const eventData = [
 
 const App = () => {
   return (
-    <NativeBaseConfigProvider>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={{ flex: 1 }}>
-        {/* <NavigationBar /> */}
+    <>
+      <StatusBar  backgroundColor="0000FF"  />
+      <NavigationBar />
         <View style={{ marginTop: 90 }}>
           <EventList events={eventData} />
         </View>
-      </SafeAreaView>
-      </NativeBaseConfigProvider>
+    </>
   );
 };
 

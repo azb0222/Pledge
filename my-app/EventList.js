@@ -13,17 +13,23 @@ const EventList = ({ events }) => {
     <View
       style={[styles.eventItem, item.isActive ? styles.active : styles.inactive]}
     >
-      <Text style={styles.eventTitle}>{item.title}</Text>
+      {/* <Button title="Will Attend" onPress={setAttendingEvent} /> */}
+     
+
+    <View style={styles.needPadding}> 
+    <Text style={styles.eventTitle}>{item.title}</Text>
       <Text style={styles.eventCompany}>{item.company}</Text>
       <Text style={styles.eventAddress}>{item.address}</Text>
       <Text style={styles.eventDate}>{item.date}</Text>
       <Text style={styles.eventAttending}>{item.attending} attending</Text>
+    </View>
+
+
       <View style={styles.attendingContainer}>
         <View style={[styles.attendingBox, attendingEvent ? styles.attendingBoxActive : null]}>
           <Text style={styles.attendingText}>Attending</Text>
         </View>
       </View>
-      <Button title="Will Attend" onPress={setAttendingEvent} />
     </View>
   );
 
@@ -32,16 +38,22 @@ const EventList = ({ events }) => {
       data={events}
       renderItem={renderItem}
       keyExtractor={(item) => item._id}
+      
     />
   );
 };
 
 const styles = StyleSheet.create({
-  eventItem: {
-    padding: 16,
+  needPadding: { 
+    padding: 16, 
     borderBottomWidth: 1,
-    borderColor: '#ccc',
-  },
+    borderColor: '#bebebe',
+    backgroundColor: '#bebebe', 
+    margin: 15, 
+    marginBottom: 0, 
+    borderRadius: 25, 
+    height: 200
+  }, 
   active: {},
   inactive: {
     backgroundColor: '#eee',
@@ -67,18 +79,19 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   attendingContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: -27,
+    backgroundColor: '#b5ffc1', 
+    borderBottomLeftRadius: 25, 
+    borderBottomRightRadius: 25, 
+    margin: 15, 
+    zIndex: -1, 
   },
   attendingBox: {
-    width: 60,
-    height: 25,
-    backgroundColor: 'green',
+    height: 50,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
   },
   attendingBoxActive: {
     backgroundColor: 'darkgreen',
@@ -86,6 +99,7 @@ const styles = StyleSheet.create({
   attendingText: {
     color: 'white',
     fontWeight: 'bold',
+    marginBottom: 0
   },
 });
 
