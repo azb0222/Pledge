@@ -1,53 +1,77 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, Text, Button } from 'react-native';
+import { useState } from 'react';
+import { View, StyleSheet, Dimensions, Text, Button, Image, TouchableOpacity } from 'react-native';
 import { HStack, Center, NativeBaseProvider, Spacer } from "native-base";
 
+const NavigationBarChildComponent = ({ changeFilter, textLabel, currentFilter }) => {
+  const isSelected = currentFilter === textLabel;
+
+  const handleInput = () => {
+    changeFilter(isSelected ? "none" : textLabel);
+  };
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.filterButton,
+        { backgroundColor: isSelected ? "#CBCBCB" : "#F4F4F4" },
+      ]}
+      onPress={handleInput}
+    >
+      <Text>{textLabel}</Text>
+    </TouchableOpacity>
+  );
+};
 
 const NavigationBar = () => {
+  const [filter, setFilter] = useState("none");
+
+  const changeFilter = (filterName) => {
+    setFilter((prevFilter) => (prevFilter === filterName ? "none" : filterName));
+  };
+
   return (
-    
-      <View style={styles.navigationBar}> 
-      <HStack space={3} justifyContent="center" style={styles.buttonHStack}>
-      
-      <Button title="Umass" />
-      <Spacer></Spacer>
-      <View> 
-      <HStack>
-      <Button title="Today" />
-        <Button title="Hot" />
-        <Button title="New" />
+    <View style={styles.navigationBar}>
+      <HStack space={3} style={styles.buttonHStack}>
+        {["📅 Today", "🔥 Hot", "👋 New"].map((item) => (
+          <NavigationBarChildComponent
+            key={item}
+            changeFilter={changeFilter}
+            textLabel={item}
+            currentFilter={filter}
+          />
+        ))}
       </HStack>
-      </View>
-      </HStack>
-      </View>
-    
+    </View>
   );
 };
 
 
 const styles = StyleSheet.create({
   navigationBar: {
-    backgroundColor: 'lightblue',
-    height: 90,
+    backgroundColor: '#F4F4F4',
+    height: 100,
     width: Dimensions.get('window').width,
     zIndex: 100,
-    position: 'absolute',
-    top: 0,
+    borderRadius: 25,
   },
-  buttonHStack: { 
-    marginTop: 40, 
-    paddingHorizontal: 15, 
-    paddingBottom: 10
+  buttonHStack: {
+    marginTop: 60,
+    justifyContent: 'center', 
+  },
+  filterButton: {
+    color: 'black',
+    fontWeight: 100,
+    borderRadius: 20,
+    paddingHorizontal: 20, 
+    paddingVertical: 7
   }
-
 });
 
 export default () => {
   return (
     <NativeBaseProvider>
-      <Center flex={1} px="3">
-          <NavigationBar />
-      </Center>
+        <NavigationBar />
     </NativeBaseProvider>
   );
 };

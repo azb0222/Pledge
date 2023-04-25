@@ -1,44 +1,52 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Button, Image, TouchableOpacity } from 'react-native';
 import { useState } from 'react'
-
-const EventList = ({ events }) => {
+import { HStack, VStack, NativeBaseProvider, Spacer } from 'native-base';
+import Popover from 'react-native-popover-view';
+function AttendingEventButton() {
   const [attendingEvent, setAttendingEvent] = useState(false);
-
   const handleButtonPress = () => {
     setAttendingEvent(!attendingEvent);
   };
 
-  const renderItem = ({ item }) => (
-    <View
-      style={[styles.eventItem, item.isActive ? styles.active : styles.inactive]}
+  return (
+    <TouchableOpacity
+      style={[styles.button, { backgroundColor: attendingEvent ? '#A1E1A8' : '#CBCBCB' }]}
+      onPress={handleButtonPress}
     >
-      {/* <Button title="Will Attend" onPress={setAttendingEvent} /> */}
-     
+      <HStack>
+        <Text style={styles.buttonText}>{attendingEvent ? 'Attending  ' : 'I want to attend'}</Text>
+        <Image source={require('./assets/images/check.png')} style={styles.checkLogo} />
+      </HStack>
+    </TouchableOpacity>
+  )
+}
 
-    <View style={styles.needPadding}> 
-    <Text style={styles.eventTitle}>{item.title}</Text>
-      <Text style={styles.eventCompany}>{item.company}</Text>
-      <Text style={styles.eventAddress}>{item.address}</Text>
-      <Text style={styles.eventDate}>{item.date}</Text>
-      <Text style={styles.eventAttending}>{item.attending} attending</Text>
-    </View>
-
-
-    <Image
-        style={styles.logo}
-        source={{
-          uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
-        }}
-      />
-
-
-      <View style={styles.attendingContainer}>
-        <View style={[styles.attendingBox, attendingEvent ? styles.attendingBoxActive : null]}>
-          <Text style={styles.attendingText}>Attending</Text>
-        </View>
+const EventList = ({ events }) => {
+  const renderItem = ({ item }) => (
+    <NativeBaseProvider>
+      <View style={styles.backgroundView}>
+        <Popover
+          from={(
+            <TouchableOpacity>
+              <Image source={require('./assets/images/Neon.jpg')} style={styles.imageView} />
+            </TouchableOpacity>
+          )}>
+              <Image source={require('./assets/images/Neon.jpg')} style={{width: 350, height: 550}}/>
+        </Popover>
+        <HStack>
+          <Text style={styles.eventTitle}>{item.title}</Text>
+          <Spacer></Spacer>
+          <VStack space={1} alignItems="flex-end">
+            <Text style={styles.eventCompany}>{item.company}</Text>
+            <Text style={styles.eventAddress}>{item.address}</Text>
+            <Text style={styles.eventDate}>{item.date}</Text>
+            <Text style={styles.eventAttending}>{"🔥" + item.attending} </Text>
+          </VStack>
+        </HStack>
+        <AttendingEventButton />
       </View>
-    </View>
+    </NativeBaseProvider>
   );
 
   return (
@@ -46,29 +54,46 @@ const EventList = ({ events }) => {
       data={events}
       renderItem={renderItem}
       keyExtractor={(item) => item._id}
-      
     />
   );
 };
 
 const styles = StyleSheet.create({
-  needPadding: { 
-    padding: 16, 
-    borderBottomWidth: 1,
-    borderColor: '#bebebe',
-    backgroundColor: '#bebebe', 
-    margin: 15, 
-    marginBottom: 0, 
-    borderRadius: 25, 
-    height: 200
+  imageView: {
+    width: "100%",
+    height: "70%",
+    marginBottom: 10,
+    borderRadius: 7
+  },
+  bigImageView: { 
+    width: "100%",
+    height: "100%",
+    marginBottom: 10,
+    borderRadius: 7
   }, 
-  active: {},
-  inactive: {
-    backgroundColor: '#eee',
+  button: {
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10
+  },
+  buttonText: {
+    textAlign: 'center'
+  },
+  backgroundView: {
+    padding: 25,
+    borderBottomWidth: 1,
+    borderColor: '#F4F4F4',
+    backgroundColor: '#F4F4F4',
+    margin: 15,
+    marginBottom: 0,
+    borderRadius: 25,
+    height: 450
   },
   eventTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontWeight: 'semibold',
+    fontSize: 30,
+    flexWrap: 'wrap',
+    width: 150
   },
   eventCompany: {
     fontSize: 14,
@@ -86,29 +111,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
   },
-  attendingContainer: {
-    alignItems: 'center',
-    marginTop: -27,
-    backgroundColor: '#b5ffc1', 
-    borderBottomLeftRadius: 25, 
-    borderBottomRightRadius: 25, 
-    margin: 15, 
-    zIndex: -1, 
-  },
-  attendingBox: {
-    height: 50,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  attendingBoxActive: {
-    backgroundColor: 'darkgreen',
-  },
-  attendingText: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginBottom: 0
-  },
+  checkLogo: {
+    height: 15,
+    width: 15
+  }
 });
 
 export default EventList;

@@ -1,16 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, SafeAreaView} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import EventList from './EventList';
 import NavigationBar from './NavigationBar';
-const eventData = [
+import { useState, useEffect } from 'react'
+import { VStack, NativeBaseProvider } from 'native-base';
+
+const mockEventData = [
   {
     "_id": "644080851d383ec32290af15",
     "index": 0,
     "isActive": true,
     "company": "Qualitern",
-    "address": "551 Beverly Road, Rosburg, New Jersey, 7914",
+    "address": "551 Beverly Road",
     "title": "Social Event",
-    "date": "2023-03-04T08:53:01 +05:00",
+    "date": "FRIDAY 4:00 PM",
     "attending": 86
   },
   {
@@ -18,9 +20,9 @@ const eventData = [
     "index": 1,
     "isActive": true,
     "company": "Valreda",
-    "address": "756 Willow Street, Alleghenyville, Mississippi, 4357",
+    "address": "551 Beverly Road",
     "title": "Social Event",
-    "date": "2023-03-12T09:54:15 +04:00",
+    "date": "FRIDAY 4:00 PM",
     "attending": 80
   },
   {
@@ -28,9 +30,9 @@ const eventData = [
     "index": 2,
     "isActive": true,
     "company": "Dogspa",
-    "address": "879 Battery Avenue, Hartsville/Hartley, California, 2649",
+    "address": "551 Beverly Road",
     "title": "Social Event",
-    "date": "2023-02-23T06:19:50 +05:00",
+    "date": "FRIDAY 4:00 PM",
     "attending": 61
   },
   {
@@ -38,9 +40,9 @@ const eventData = [
     "index": 3,
     "isActive": false,
     "company": "Comtours",
-    "address": "165 Lafayette Walk, Hillsboro, Louisiana, 8796",
+    "address": "165 Lafayette Walk",
     "title": "Social Event",
-    "date": "2023-03-09T05:17:32 +05:00",
+    "date": "FRIDAY 4:00 PM",
     "attending": 9
   },
   {
@@ -48,9 +50,9 @@ const eventData = [
     "index": 4,
     "isActive": false,
     "company": "Amtas",
-    "address": "759 Montauk Court, Bergoo, Minnesota, 1509",
+    "address": "551 Beverly Road",
     "title": "Social Event",
-    "date": "2023-04-17T11:09:40 +04:00",
+    "date": "FRIDAY 4:00 PM",
     "attending": 66
   },
   {
@@ -58,23 +60,64 @@ const eventData = [
     "index": 5,
     "isActive": true,
     "company": "Extremo",
-    "address": "283 Varanda Place, Gloucester, Wisconsin, 5339",
+    "address": "551 Beverly Road",
     "title": "Social Event",
-    "date": "2023-04-15T10:31:30 +04:00",
+    "date": "FRIDAY 4:00 PM",
     "attending": 93
   }
 ]
 
 const App = () => {
+
+  const [eventData, setEventData] = useState([]);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setPosts(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
+
   return (
     <>
-      <StatusBar  backgroundColor="0000FF"  />
-      <NavigationBar />
-        <View style={{ marginTop: 90 }}>
-          <EventList events={eventData} />
-        </View>
+      <NativeBaseProvider>
+        <VStack>
+          <NavigationBar />
+          <View style={styles.listView}>
+            <EventList events={mockEventData} />
+          </View>
+        </VStack>
+      </NativeBaseProvider>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  listView: {
+    transform: [{ translateY: 100 }],
+  },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: "80%",
+    marginTop: 40,
+    width: "100%",
+  },
+  blurContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: 600,
+    height: 600,
+    resizeMode: 'contain',
+  },
+})
 
 export default App;
