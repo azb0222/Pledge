@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "Pledge",
+    "slug": "Pledge",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/appstore.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/appstore.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,7 +15,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.frats.pledge", 
+      "deploymentTarget": "9"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +27,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "992c6bc6-8d25-46a4-9f54-a13b06661ca3"
+      }
+    },
+    "plugins": [
+      "expo-build-properties"
+    ]
   }
 }

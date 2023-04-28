@@ -11,7 +11,7 @@ const mockEventData = [
     "isActive": true,
     "company": "Qualitern",
     "address": "551 Beverly Road",
-    "title": "Social Event",
+    "title": "Neon Outside",
     "date": "FRIDAY 4:00 PM",
     "attending": 86
   },
@@ -67,31 +67,93 @@ const mockEventData = [
   }
 ]
 
+const mockData = {
+  "success": true,
+  "events": [
+    {
+      "_id": "64489f7d56e9c37f9fb6c489",
+      "start_date": "2023-04-28T22:30:00.000Z",
+      "end_date": "2023-04-28T22:30:00.000Z",
+      "added_date": "2023-05-01T14:00:00.000Z",
+      "host": "Delta Sigma Pi",
+      "address": "123 Main St, Anytown",
+      "header": "https://i.imgur.com/9ePjKyx.jpg",
+      "participants": 10,
+      "title": "Networking Night"
+    },
+    {
+      "_id": "6448a12c56e9c37f9fb6c48a",
+      "start_date": "2023-05-12T21:00:00.000Z",
+      "end_date": "2023-05-13T01:00:00.000Z",
+      "added_date": "2023-05-07T12:00:00.000Z",
+      "host": "Kappa Delta",
+      "address": "987 Oak Ave, Springfield",
+      "header": "https://i.imgur.com/xQn4eRx.jpg",
+      "participants": 11,
+      "title": "Spring Fling"
+    }
+  ]
+}
+
+
+
 const App = () => {
 
-  const [eventData, setEventData] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [resort, setResort] = useState("none");
 
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-      .then((response) => response.json())
+  const refreshList = () => {
+    fetch('https://pledge.anvil.gg/api/events/list')
+      .then((response) => {
+        return response.json()
+      })
       .then((data) => {
-        console.log(data);
-        setPosts(data);
+        setEvents(data.events);
+      // setEvents(mockData.events)
       })
       .catch((err) => {
         console.log(err.message);
+        //show error screen here
       });
+      console.log("This is getting called!")
+  }
+
+  useEffect(() => {
+    refreshList(); 
   }, []);
 
+  const sortEvents = (x) => { 
+    console.log(x); 
+    if (x === "Today") {
+      const today = new Date();
+      setEvents(events.filter(event => {
+        const eventDate = new Date(event.start_date);
+        return (
+          eventDate.getDate() === today.getDate() &&
+          eventDate.getMonth() === today.getMonth() &&
+          eventDate.getFullYear() === today.getFullYear()
+        );
+      })); 
+    }
+    else if (x === "Hot") { 
+      const sortedEvents = [...events].sort((a, b) => b.participants - a.participants);
+      setEvents(sortedEvents);
+    } else if (x === "none") { 
+      refreshList() 
+    }
+  }; 
+  
   return (
     <>
       <NativeBaseProvider>
-        <VStack>
-          <NavigationBar />
-          <View style={styles.listView}>
-            <EventList events={mockEventData} />
-          </View>
-        </VStack>
+        <View style={styles.listBackground}>
+          <VStack>
+          <NavigationBar  sortEvents={sortEvents}/>
+              <View style={styles.listView}>
+              <EventList events={events} refreshList={refreshList} />
+            </View>
+          </VStack>
+        </View>
       </NativeBaseProvider>
     </>
   );
@@ -99,7 +161,8 @@ const App = () => {
 
 const styles = StyleSheet.create({
   listView: {
-    transform: [{ translateY: 100 }],
+    position: "fixed",
+    marginTop: 100 
   },
   container: {
     justifyContent: 'center',
@@ -118,6 +181,9 @@ const styles = StyleSheet.create({
     height: 600,
     resizeMode: 'contain',
   },
+  listBackground: { 
+    marginBottom: 30
+  }
 })
 
 export default App;

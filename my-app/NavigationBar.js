@@ -3,18 +3,16 @@ import { useState } from 'react';
 import { View, StyleSheet, Dimensions, Text, Button, Image, TouchableOpacity } from 'react-native';
 import { HStack, Center, NativeBaseProvider, Spacer } from "native-base";
 
-const NavigationBarChildComponent = ({ changeFilter, textLabel, currentFilter }) => {
-  const isSelected = currentFilter === textLabel;
-
+const NavigationBarChildComponent = ({ changeFilter, textLabel, isSelected, currentFilter, sortEvents }) => {
   const handleInput = () => {
-    changeFilter(isSelected ? "none" : textLabel);
+    changeFilter(currentFilter === textLabel ? "none" : textLabel);
   };
 
   return (
     <TouchableOpacity
       style={[
         styles.filterButton,
-        { backgroundColor: isSelected ? "#CBCBCB" : "#F4F4F4" },
+        { backgroundColor: isSelected ? "#CBCBCB" : "#EAE9E9" },
       ]}
       onPress={handleInput}
     >
@@ -23,33 +21,46 @@ const NavigationBarChildComponent = ({ changeFilter, textLabel, currentFilter })
   );
 };
 
-const NavigationBar = () => {
+const NavigationBar = ({ sortEvents }) => {
   const [filter, setFilter] = useState("none");
 
   const changeFilter = (filterName) => {
-    setFilter((prevFilter) => (prevFilter === filterName ? "none" : filterName));
+    setFilter(filterName);
+    if (filterName === "📅 Today") {
+      sortEvents("Today");
+    } else if (filterName === "🔥 Hot") {
+      sortEvents("Hot");
+    } else if (filterName === "👋 New") {
+      sortEvents("New");
+    } else {
+      sortEvents("none");
+    }
   };
 
   return (
-    <View style={styles.navigationBar}>
-      <HStack space={3} style={styles.buttonHStack}>
-        {["📅 Today", "🔥 Hot", "👋 New"].map((item) => (
-          <NavigationBarChildComponent
-            key={item}
-            changeFilter={changeFilter}
-            textLabel={item}
-            currentFilter={filter}
-          />
-        ))}
-      </HStack>
-    </View>
+    <NativeBaseProvider>
+      <View style={styles.navigationBar}>
+        <HStack space={3} style={styles.buttonHStack}>
+          {["📅 Today", "🔥 Hot", "👋 New"].map((item) => (
+            <NavigationBarChildComponent
+              key={item}
+              changeFilter={changeFilter}
+              textLabel={item}
+              isSelected={filter === item}
+              currentFilter={filter}
+              sortEvents={sortEvents}
+            />
+          ))}
+        </HStack>
+      </View>
+    </NativeBaseProvider>
   );
 };
 
 
 const styles = StyleSheet.create({
   navigationBar: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#EAE9E9',
     height: 100,
     width: Dimensions.get('window').width,
     zIndex: 100,
@@ -68,10 +79,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default () => {
-  return (
-    <NativeBaseProvider>
-        <NavigationBar />
-    </NativeBaseProvider>
-  );
-};
+export default NavigationBar; 
