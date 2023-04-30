@@ -4,16 +4,26 @@
     "promptToConfigurePushNotifications": false
   },
   "build": {
+    "production": {
+      "ios": {
+        "image": "macos-ventura-13.3-xcode-14.3"
+      }
+    }, 
     "development": {
       "developmentClient": true,
       "distribution": "internal"
     },
     "preview": {
       "distribution": "internal"
-    },
-    "production": {}
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": { 
+        "appleId": "mastermind@artemis.ac", 
+        "ascAppId": "6448644579", 
+        "appleTeamId": "KRFYYR37AK"
+      }
+    }
   }
 }
