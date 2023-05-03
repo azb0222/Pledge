@@ -9,18 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.18.1",
+    "@react-native-async-storage/async-storage": "1.17.11",
     "date-fns": "^2.29.3",
-    "expo": "^46.0.21",
+    "expo": "^48.0.0",
+    "expo-build-properties": "~0.6.0",
     "expo-status-bar": "~1.4.4",
-    "lottie-react-native": "^5.1.5",
+    "json-stringify-safe": "^5.0.1",
+    "lottie-react-native": "5.1.4",
     "native-base": "^3.4.28",
     "react": "18.2.0",
-    "react-native": "0.71.6",
-    "react-native-gesture-handler": "^2.9.0",
+    "react-native": "0.71.3",
+    "react-native-gesture-handler": "~2.9.0",
     "react-native-popover-view": "^5.1.7",
-    "styled-components": "^5.3.10",
-    "expo-build-properties": "~0.3.0"
+    "stringify-object": "^5.0.0",
+    "styled-components": "^5.3.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
