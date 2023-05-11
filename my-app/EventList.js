@@ -56,7 +56,7 @@ function AttendingEventButton(props) {
       onPress={handleButtonPress}
     >
       <HStack justifyContent="center">
-        <Text style={styles.buttonText}>{attendingEvent ? 'Attending  ' : 'I want to attend '}</Text>
+        <Text style={styles.buttonText}>{attendingEvent ? 'Attending 👍' : 'I want to attend '}</Text>
         <Image source={attendingEvent ? require('./assets/images/check.png') : require('./assets/images/raiseHand.png')} style={styles.checkLogo} />
       </HStack>
     </TouchableOpacity>
