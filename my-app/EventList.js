@@ -36,9 +36,9 @@ function AttendingEventButton(props) {
     .then(e => e.json())
     .then(e => {
         console.log(e)
-        props.event.attendingEvent += isAttending ? 1 : -1;
+        props.event.participants += isAttending ? 1 : -1;
+        props.sortEvents()
         setAttendingEvent(isAttending);
-        props.refreshList(); 
     });
   }
 
@@ -63,8 +63,7 @@ function AttendingEventButton(props) {
   )
 }
 
-const EventList = ({ events, refreshList, refreshing }) => {
-  const [showPopover, setShowPopover] = useState(null);
+const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
   const [showPopoverId, setShowPopoverId] = useState(null);
   const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
 
@@ -143,6 +142,7 @@ const EventList = ({ events, refreshList, refreshing }) => {
             event={item}
             setIsAnimationPlaying={setIsAnimationPlaying} // Pass the function
             refreshList={refreshList}
+            sortEvents={sortEvents}
             refreshing={refreshing}
           />          
         </VStack>        

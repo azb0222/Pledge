@@ -37,11 +37,10 @@ const App = () => {
   useEffect(() => {
     refreshList().then(() => {
       setRefreshing(false); 
-      console.log("ee");
     });
   }, []);
 
-  const sortEvents = (x) => { 
+  const sortEvents = (x = filter) => { 
     setFilter(x);
 
     switch (x) {
@@ -68,7 +67,6 @@ const App = () => {
        */
       default: {
         const sortedEvents = [...events].sort((a, b) => b.participants - a.participants);
-        console.log(sortedEvents);
         setDisplayedEvents(sortedEvents);
         break;
       }
@@ -82,7 +80,7 @@ const App = () => {
           <VStack>
           <NavigationBar  sortEvents={sortEvents}/>
               <View style={styles.listView}>
-              <EventList events={events} refreshList={refreshList} refreshing={refreshing}/>
+              <EventList events={displayedEvents} sortEvents={sortEvents} refreshList={refreshList} refreshing={refreshing}/>
             </View>
           </VStack>
         </View>
