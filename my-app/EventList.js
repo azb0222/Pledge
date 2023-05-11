@@ -5,9 +5,8 @@ import Popover from 'react-native-popover-view';
 import LottieView from 'lottie-react-native';
 import { formatInTimeZone } from 'date-fns-tz'
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-
-
-
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder-expo';
+import ImageLoad from 'react-native-image-placeholder';
 
 function AttendingEventButton(props) {
   const [attendingEvent, setAttendingEvent] = useState(false);
@@ -72,10 +71,31 @@ const EventList = ({ events, refreshList, refreshing }) => {
   const changeAnimation = () => { 
     setIsAnimationPlaying(true)
   }
-
+  const renderPlaceholder = () => {
+    return (
+      <NativeBaseProvider>
+        <View style={styles.backgroundView}>
+          <HStack justifyContent="right">
+            <Spacer> </Spacer>
+            <Image source={require('./assets/images/party.png')} style={styles.partyImage} />
+            <Text style={styles.whosThrowing}> Loading</Text>
+          </HStack>
+          <SkeletonPlaceholder borderRadius={4}>
+            <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
+              <SkeletonPlaceholder.Item width={60} height={60} borderRadius={50} />
+              <SkeletonPlaceholder.Item marginLeft={20}>
+                <SkeletonPlaceholder.Item width={120} height={20} />
+                <SkeletonPlaceholder.Item marginTop={6} width={80} height={20} />
+              </SkeletonPlaceholder.Item>
+            </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+        </View>
+      </NativeBaseProvider>
+    )
+  }
   const renderItem = ({ item }) => (
     <NativeBaseProvider>
-
+      
       <View style={styles.backgroundView}>
 
         <HStack justifyContent="right">
@@ -115,7 +135,7 @@ const EventList = ({ events, refreshList, refreshing }) => {
             event={item}
             setIsAnimationPlaying={setIsAnimationPlaying} // Pass the function
             refreshList={refreshList}
-            refreshing={false}
+            refreshing={refreshing}
           />          
         </VStack>        
         {/* <LottieView
@@ -151,8 +171,8 @@ const EventList = ({ events, refreshList, refreshing }) => {
       <View style={styles.gapView}>
       </View>
       <FlatList
-        data={events}
-        renderItem={renderItem}
+        data={refreshing ? [1, 2, 3] : events}
+        renderItem={refreshing ? renderPlaceholder : renderItem}
         keyExtractor={(item) => item._id}
         refreshControl={<RefreshControl
           colors={["#9Bd35A", "#689F38"]}

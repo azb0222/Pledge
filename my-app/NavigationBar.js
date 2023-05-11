@@ -22,7 +22,7 @@ const NavigationBarChildComponent = ({ changeFilter, textLabel, isSelected, curr
 };
 
 const NavigationBar = ({ sortEvents }) => {
-  const [filter, setFilter] = useState("none");
+  const [filter, setFilter] = useState("🔥 Hot");
 
   const changeFilter = (filterName) => {
     setFilter(filterName);
