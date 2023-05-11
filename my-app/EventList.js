@@ -66,6 +66,7 @@ function AttendingEventButton(props) {
 
 const EventList = ({ events, refreshList, refreshing }) => {
   const [showPopover, setShowPopover] = useState(null);
+  const [showPopoverId, setShowPopoverId] = useState(null);
   const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
 
   const changeAnimation = () => { 
@@ -86,18 +87,18 @@ const EventList = ({ events, refreshList, refreshing }) => {
 
         <VStack>
           <View styles={styles.tester}>
-            <TouchableOpacity onPress={() => setShowPopover(item)}>
-              <Image source={{
-                uri: item.header,
-              }} style={styles.imageView} />
-
-
-            </TouchableOpacity>
-            <Popover isVisible={showPopover !== null} onRequestClose={() => setShowPopover(null)}>
-              <Image source={{
-                uri: item.header,
-              }} style={{ width: 350, height: 550 }} />
-            </Popover>
+          <TouchableOpacity onPress={() => setShowPopoverId(item._id)}>
+        <Image source={{ uri: item.header }} style={styles.imageView} />
+      </TouchableOpacity>
+      {
+        showPopoverId &&
+        <Popover isVisible onRequestClose={() => setShowPopoverId(null)}>
+          {
+            events.find(event => event._id === showPopoverId) &&
+            <Image source={{ uri: events.find(event => event._id === showPopoverId).header }} style={{ width: 350, height: 550 }} />
+          }
+        </Popover>
+      }
           </View>
           <HStack style={styles.horiTextView}>
             <Text style={styles.eventTitle}>{item.title}</Text>
