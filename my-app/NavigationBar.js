@@ -33,7 +33,8 @@ const NavigationBar = ({ sortEvents }) => {
     } else if (filterName === "👋 New") {
       sortEvents("New");
     } else {
-      sortEvents("none");
+      setFilter("🔥 Hot");
+      sortEvents("Hot");
     }
   };
 

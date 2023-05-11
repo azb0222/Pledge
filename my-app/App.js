@@ -9,7 +9,7 @@ const App = () => {
   const [refreshing, setRefreshing] = useState(true);
   const [events, setEvents] = useState([]);
   const [displayedEvents, setDisplayedEvents] = useState([]);
-  const [filter, setFilter] = useState("🔥 Hot");
+  const [filter, setFilter] = useState("Hot");
 
   const refreshList = () => {
     setRefreshing(true);
@@ -20,7 +20,8 @@ const App = () => {
       .then((data) => {
         setEvents(data.events);
         if (displayedEvents.length === 0) {
-          sortEvents(filter);
+          sortEvents(filter, data.events);
+          console.log(displayedEvents);
         } else {
           setDisplayedEvents(data.events.filter(e => displayedEvents.some(d => d._id === e._id)));
         }
@@ -35,12 +36,10 @@ const App = () => {
   }
 
   useEffect(() => {
-    refreshList().then(() => {
-      setRefreshing(false); 
-    });
+    refreshList();
   }, []);
 
-  const sortEvents = (x = filter) => { 
+  const sortEvents = (x = filter, eventList = events) => { 
     setFilter(x);
 
     switch (x) {
@@ -50,7 +49,7 @@ const App = () => {
        */
       case "Today": {
         const today = new Date();
-        setDisplayedEvents(events.filter(event => {
+        setDisplayedEvents(eventList.filter(event => {
           const eventDate = new Date(event.start_date);
           return (
             eventDate.getDate() === today.getDate() &&
@@ -66,7 +65,7 @@ const App = () => {
        * Lets leave it like this for the time being
        */
       default: {
-        const sortedEvents = [...events].sort((a, b) => b.participants - a.participants);
+        const sortedEvents = [...eventList].sort((a, b) => b.participants - a.participants);
         setDisplayedEvents(sortedEvents);
         break;
       }
