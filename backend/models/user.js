@@ -1,5 +1,3 @@
-import { type } from "os";
-
 const mongoose = require('mongoose');
 
 const UserSchema = mongoose.Schema({

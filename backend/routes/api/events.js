@@ -3,18 +3,61 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
 const Events = require('../../models/events');
+const e = require('express');
 
 
-router.post('/list', async (req, res) => {
+router.get('/list', async (req, res) => {
     // Simple auth check
     //if (!req.isAuthenticated || !req.hasArtemis) 
     //    return res.status(401).json({ success: false, message: 'You are not authenticated.' });
-
-    let events = await Events.find({});
+    console.log(new Date());
+    let events = (await Events.find({end_date: {$gte: new Date()}})).map(ev => {
+        return ev;
+    });
     res.json({
         success: true,
         events: events
     });
+});
+
+router.post('/:id/attend', async (req, res) => {
+    // Simple auth check
+    //if (!req.isAuthenticated || !req.hasArtemis) 
+    //    return res.status(401).json({ success: false, message: 'You are not authenticated.' });
+    await Events.findOneAndUpdate( {_id: req.params.id}, 
+        {$inc : {'participants' : 1}}, 
+        {new: true})
+        .then(function(ress) { 
+            if (ress === null) {
+                res.json({
+                    success: false
+                });
+            } else {
+                res.json({
+                    success: true
+                });
+            }    
+        });
+});
+
+router.post('/:id/unattend', async (req, res) => {
+    // Simple auth check
+    //if (!req.isAuthenticated || !req.hasArtemis) 
+    //    return res.status(401).json({ success: false, message: 'You are not authenticated.' });
+    await Events.findOneAndUpdate( {_id: req.params.id}, 
+        {$inc : {'participants' : -1}}, 
+        {new: true})
+        .then(function(ress) { 
+            if (ress === null) {
+                res.json({
+                    success: false
+                });
+            } else {
+                res.json({
+                    success: true
+                });
+            }    
+        });
 });
 
 //                                       //

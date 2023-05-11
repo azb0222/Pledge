@@ -22,7 +22,6 @@ const app = express();
 mongoose.connect(config.mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('[init] Connected to Mongo.'))
     .catch(console.error);
-
 const sessionCache = {};
 
 (async () => {
@@ -153,9 +152,9 @@ app.post('/session/delete', async (req, res) => {
     } else return res.status(400).json({ success: false, message: 'Invalid token, it might have expired.' });
 });
 
-app.use('/api/users', require('./routes/api/users'));
+//app.use('/api/users', require('./routes/api/users'));
 app.use('/api/events', require('./routes/api/events'));
 
-app.listen(80, () => {
+app.listen(3000, () => {
     console.log('[init] Started Pledge backend. JavaScript supremacy');
 });

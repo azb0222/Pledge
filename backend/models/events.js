@@ -9,6 +9,10 @@ const EventSchema = mongoose.Schema({
         type: Date,
         required: false
     },
+    added_date: {
+        type: Date,
+        required: false
+    },
     host: {
         type: String,
         required: true
@@ -17,8 +21,12 @@ const EventSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    header: {
+        type: String,
+        required: true,
+    },
     participants: {
-        type: Object,
+        type: Number,
         required: true
     }
 });
