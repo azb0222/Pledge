@@ -3,7 +3,7 @@ import { RefreshControl, View, ScrollView, Text, StyleSheet, FlatList, Image, To
 import { HStack, VStack, NativeBaseProvider, Spacer } from 'native-base';
 import Popover from 'react-native-popover-view';
 import LottieView from 'lottie-react-native';
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 
@@ -102,9 +102,9 @@ const EventList = ({ events, refreshList, refreshing }) => {
           <HStack style={styles.horiTextView}>
             <Text style={styles.eventTitle}>{item.title}</Text>
             <Spacer></Spacer>
-            <VStack space={2} alignItems="flex-end" >
-              <Text style={styles.eventCompany}>{format(
-                new Date(item.start_date), 'EEEE dd LLL')}</Text>
+            <VStack style={styles.eventWrapper} space={2} alignItems="flex-end" >
+              <Text style={styles.eventCompany}>{formatInTimeZone(
+                new Date(item.start_date), 'GMT', "EEE dd LLL '@' h:mm a")}</Text>
               <Text style={styles.eventAddress}>{item.address}</Text>
               <Text style={styles.eventAttending}>{"🔥" + item.participants} </Text>
             </VStack>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   horiTextView: {
-    paddingTop: 20
+    paddingTop: 20,
   },
   button: {
     padding: 10,
@@ -222,6 +222,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: 170,
   },
+  eventWrapper: {
+    flexWrap: 'wrap',
+    width: 170,
+  },
   eventCompany: {
     fontSize: 14,
     color: '#666',
@@ -236,6 +240,7 @@ const styles = StyleSheet.create({
   },
   eventDate: {
     fontSize: 13,
+    textAlign: "right",
     color: '#999',
     fontWeight: 'bold',
 
