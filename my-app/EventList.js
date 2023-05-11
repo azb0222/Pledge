@@ -104,7 +104,7 @@ const EventList = ({ events, refreshList, refreshing }) => {
             <Spacer></Spacer>
             <VStack space={2} alignItems="flex-end" >
               <Text style={styles.eventCompany}>{format(
-                new Date(item.start_date), 'MM/dd/yyyy')}</Text>
+                new Date(item.start_date), 'EEEE dd LLL')}</Text>
               <Text style={styles.eventAddress}>{item.address}</Text>
               <Text style={styles.eventAttending}>{"🔥" + item.participants} </Text>
             </VStack>
