@@ -134,6 +134,17 @@ const EventList = ({ events, refreshList, refreshing }) => {
     </NativeBaseProvider>
   );
 
+  const EmptyListMessage = ({item}) => {
+    return (
+      // Flat List Item
+      <Text
+        style={styles.emptyListStyle}
+        onPress={() => getItem(item)}>
+        No events found! 😔
+      </Text>
+    );
+  };
+
   return (
     <View>
       <View style={styles.gapView}>
@@ -146,6 +157,7 @@ const EventList = ({ events, refreshList, refreshing }) => {
           colors={["#9Bd35A", "#689F38"]}
           refreshing={refreshing}
           onRefresh={refreshList.bind(this)} />}
+        ListEmptyComponent={EmptyListMessage}
       />
     </View>
 
@@ -237,7 +249,14 @@ const styles = StyleSheet.create({
   checkLogo: {
     height: 15,
     width: 15
-  }
+  },
+  emptyListStyle: {
+    fontWeight: 'bold',
+    paddingTop: 200,
+    padding: 10,
+    fontSize: 18,
+    textAlign: 'center',
+  },
 });
 
 export default EventList;
