@@ -74,7 +74,7 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
     return (
       <NativeBaseProvider>
         <View style={styles.backgroundView}>
-          <HStack justifyContent="right">
+          <HStack>
             <Spacer> </Spacer>
             <Image source={require('./assets/images/party.png')} style={styles.partyImage} />
             <Text style={styles.whosThrowing}> Loading</Text>
@@ -97,7 +97,7 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
       
       <View style={styles.backgroundView}>
 
-        <HStack justifyContent="right">
+        <HStack>
           <Spacer> </Spacer>
           <Image source={require('./assets/images/party.png')} style={styles.partyImage} />
           <Text style={styles.whosThrowing}> {item.host}</Text>
@@ -197,7 +197,6 @@ const styles = StyleSheet.create({
   whosThrowing: {
     fontWeight: '600',
     fontSize: 16,
-    textAlign: "right",
     marginBottom: 10,
     marginTop: 5,
     marginRight: 5,
@@ -269,7 +268,6 @@ const styles = StyleSheet.create({
   },
   eventDate: {
     fontSize: 13,
-    textAlign: "right",
     color: '#999',
     fontWeight: 'bold',
 

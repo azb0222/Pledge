@@ -91,7 +91,6 @@ const App = () => {
 
 const styles = StyleSheet.create({
   listView: {
-    position: "fixed",
     marginTop: 100 
   },
   container: {
