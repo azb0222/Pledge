@@ -108,14 +108,22 @@ const EventList = ({ events, refreshList, refreshing }) => {
         <VStack>
           <View styles={styles.tester}>
           <TouchableOpacity onPress={() => setShowPopoverId(item._id)}>
-        <Image source={{ uri: item.header }} style={styles.imageView} />
+        <ImageLoad 
+          source={{ uri: item.header }} 
+          style={styles.imageView} 
+          loadingStyle={{ size: 'large', color: 'black' }}
+        />
       </TouchableOpacity>
       {
         showPopoverId &&
         <Popover isVisible onRequestClose={() => setShowPopoverId(null)}>
           {
             events.find(event => event._id === showPopoverId) &&
-            <Image source={{ uri: events.find(event => event._id === showPopoverId).header }} style={{ width: 350, height: 550 }} />
+            <ImageLoad 
+              source={{ uri: events.find(event => event._id === showPopoverId).header }} 
+              style={{ width: 350, height: 550 }} 
+              loadingStyle={{ size: 'large', color: 'black' }}
+            />
           }
         </Popover>
       }
@@ -173,7 +181,7 @@ const EventList = ({ events, refreshList, refreshing }) => {
       <FlatList
         data={refreshing ? [1, 2, 3] : events}
         renderItem={refreshing ? renderPlaceholder : renderItem}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => refreshing ? item : item._id}
         refreshControl={<RefreshControl
           colors={["#9Bd35A", "#689F38"]}
           refreshing={refreshing}
