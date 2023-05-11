@@ -100,6 +100,7 @@ const mockData = {
 const App = () => {
 
   const [events, setEvents] = useState([]);
+  const [displayedEvents, setDisplayEvents] = useState([]);
   const [resort, setResort] = useState("none");
 
   const refreshList = () => {
@@ -124,22 +125,34 @@ const App = () => {
 
   const sortEvents = (x) => { 
     console.log(x); 
-    if (x === "Today") {
-      const today = new Date();
-      setEvents(events.filter(event => {
-        const eventDate = new Date(event.start_date);
-        return (
-          eventDate.getDate() === today.getDate() &&
-          eventDate.getMonth() === today.getMonth() &&
-          eventDate.getFullYear() === today.getFullYear()
-        );
-      })); 
-    }
-    else if (x === "Hot") { 
-      const sortedEvents = [...events].sort((a, b) => b.participants - a.participants);
-      setEvents(sortedEvents);
-    } else if (x === "none") { 
-      refreshList() 
+
+    switch (x) {
+      /**
+       * Logic for today: Make sure date is same as current IOS
+       * date. This may be manipulated by the user. tough for them
+       */
+      case "Today": {
+        const today = new Date();
+        setDisplayEvents(events.filter(event => {
+          const eventDate = new Date(event.start_date);
+          return (
+            eventDate.getDate() === today.getDate() &&
+            eventDate.getMonth() === today.getMonth() &&
+            eventDate.getFullYear() === today.getFullYear()
+          );
+        })); 
+        break;
+      }
+
+      /**
+       * This is the default functionality for hot and other stuff.
+       * Lets leave it like this for the time being
+       */
+      default: {
+        const sortedEvents = [...events].sort((a, b) => b.participants - a.participants);
+        setDisplayEvents(sortedEvents);
+        break;
+      }
     }
   }; 
   
@@ -150,7 +163,7 @@ const App = () => {
           <VStack>
           <NavigationBar  sortEvents={sortEvents}/>
               <View style={styles.listView}>
-              <EventList events={events} refreshList={refreshList} />
+              <EventList events={displayedEvents} refreshList={refreshList} />
             </View>
           </VStack>
         </View>
