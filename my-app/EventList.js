@@ -168,7 +168,7 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
       // Flat List Item
       <Text
         style={styles.emptyListStyle}
-        onPress={() => getItem(item)}>
+      >
         No events found! 😔
       </Text>
     );
