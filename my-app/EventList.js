@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity,  Animated, Easing } from 'react-native';
+import { RefreshControl, View, ScrollView, Text, StyleSheet, FlatList, Image, TouchableOpacity,  Animated, Easing } from 'react-native';
 import { HStack, VStack, NativeBaseProvider, Spacer } from 'native-base';
 import Popover from 'react-native-popover-view';
 import LottieView from 'lottie-react-native';
@@ -7,25 +7,11 @@ import { format } from 'date-fns'
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 
-const updateEvent = (id, isAttending) => { 
-  const url = 'https://pledge.anvil.gg/api/events/' + id + "/" + (isAttending ? 'attend' : 'unattend')
-  console.log(url)
-  fetch(url, {
-  method: 'POST',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    //TODADD
-  }),
-});
-}
+
 
 function AttendingEventButton(props) {
   const [attendingEvent, setAttendingEvent] = useState(false);
-
-  const storageKey = `eventAttendingStatus:${props.eventId}`; 
+  const storageKey = `eventAttendingStatus:${props.event._id}`; 
 
   useEffect(() => {
     const loadAttendingStatus = async () => {
@@ -35,19 +21,34 @@ function AttendingEventButton(props) {
     loadAttendingStatus();
   }, []);
 
+  const updateEvent = (isAttending) => { 
+    const url = 'https://pledge.anvil.gg/api/events/' + props.event._id + "/" + (isAttending ? 'attend' : 'unattend')
+    console.log(url)
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        //TODADD
+      }),
+    })
+    .then(e => e.json())
+    .then(e => {
+        console.log(e)
+        props.event.attendingEvent += isAttending ? 1 : -1;
+        setAttendingEvent(isAttending);
+        props.refreshList(); 
+    });
+  }
+
   const handleButtonPress = async () => {
     props.setIsAnimationPlaying(true); // Update this line
     const newStatus = !attendingEvent;
 
     await AsyncStorage.setItem(storageKey, newStatus.toString());
-
-    if (attendingEvent) { 
-      updateEvent(props.eventId, false)
-    } else { 
-      updateEvent(props.eventId, true)
-    }
-    setAttendingEvent(newStatus);
-    props.refreshList(); 
+    updateEvent(newStatus);
   };
 
   return (
@@ -63,9 +64,8 @@ function AttendingEventButton(props) {
   )
 }
 
-const EventList = ({ events, refreshList }) => {
-  const [showPopover, setShowPopover] = useState(false);
-
+const EventList = ({ events, refreshList, refreshing }) => {
+  const [showPopover, setShowPopover] = useState(null);
   const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
 
   const changeAnimation = () => { 
@@ -86,14 +86,14 @@ const EventList = ({ events, refreshList }) => {
 
         <VStack>
           <View styles={styles.tester}>
-            <TouchableOpacity onPress={() => setShowPopover(true)}>
+            <TouchableOpacity onPress={() => setShowPopover(item)}>
               <Image source={{
                 uri: item.header,
               }} style={styles.imageView} />
 
 
             </TouchableOpacity>
-            <Popover isVisible={showPopover} onRequestClose={() => setShowPopover(false)}>
+            <Popover isVisible={showPopover !== null} onRequestClose={() => setShowPopover(null)}>
               <Image source={{
                 uri: item.header,
               }} style={{ width: 350, height: 550 }} />
@@ -111,10 +111,11 @@ const EventList = ({ events, refreshList }) => {
             
           </HStack>
           <AttendingEventButton
-          eventId={item._id}
-          setIsAnimationPlaying={setIsAnimationPlaying} // Pass the function
-          refreshList={refreshList}
-        />          
+            event={item}
+            setIsAnimationPlaying={setIsAnimationPlaying} // Pass the function
+            refreshList={refreshList}
+            refreshing={false}
+          />          
         </VStack>        
         {/* <LottieView
           source={require('./assets/images/sparkle.json')}
@@ -141,6 +142,10 @@ const EventList = ({ events, refreshList }) => {
         data={events}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
+        refreshControl={<RefreshControl
+          colors={["#9Bd35A", "#689F38"]}
+          refreshing={refreshing}
+          onRefresh={refreshList.bind(this)} />}
       />
     </View>
 

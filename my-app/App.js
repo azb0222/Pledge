@@ -100,8 +100,8 @@ const mockData = {
 const App = () => {
 
   const [events, setEvents] = useState([]);
-  const [displayedEvents, setDisplayEvents] = useState([]);
-  const [resort, setResort] = useState("none");
+  const [displayedEvents, setDisplayedEvents] = useState([]);
+  const [filter, setFilter] = useState("none");
 
   const refreshList = () => {
     fetch('https://pledge.anvil.gg/api/events/list')
@@ -110,13 +110,17 @@ const App = () => {
       })
       .then((data) => {
         setEvents(data.events);
+        if (displayedEvents.length === 0) {
+          sortEvents(filter);
+        } else {
+          setDisplayedEvents(data.events.filter(e => displayedEvents.some(d => d._id === e._id)));
+        }
       // setEvents(mockData.events)
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log(err);
         //show error screen here
       });
-      console.log("This is getting called!")
   }
 
   useEffect(() => {
@@ -124,7 +128,7 @@ const App = () => {
   }, []);
 
   const sortEvents = (x) => { 
-    console.log(x); 
+    setFilter(x);
 
     switch (x) {
       /**
@@ -133,7 +137,7 @@ const App = () => {
        */
       case "Today": {
         const today = new Date();
-        setDisplayEvents(events.filter(event => {
+        setDisplayedEvents(events.filter(event => {
           const eventDate = new Date(event.start_date);
           return (
             eventDate.getDate() === today.getDate() &&
@@ -150,7 +154,8 @@ const App = () => {
        */
       default: {
         const sortedEvents = [...events].sort((a, b) => b.participants - a.participants);
-        setDisplayEvents(sortedEvents);
+        console.log(sortedEvents);
+        setDisplayedEvents(sortedEvents);
         break;
       }
     }
@@ -163,7 +168,7 @@ const App = () => {
           <VStack>
           <NavigationBar  sortEvents={sortEvents}/>
               <View style={styles.listView}>
-              <EventList events={displayedEvents} refreshList={refreshList} />
+              <EventList events={displayedEvents} refreshList={refreshList} refreshing={false}/>
             </View>
           </VStack>
         </View>
