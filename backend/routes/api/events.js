@@ -4,14 +4,16 @@ const { v4: uuidv4 } = require('uuid');
 
 const Events = require('../../models/events');
 const e = require('express');
+const moment = require('moment-timezone');
 
 
 router.get('/list', async (req, res) => {
     // Simple auth check
     //if (!req.isAuthenticated || !req.hasArtemis) 
     //    return res.status(401).json({ success: false, message: 'You are not authenticated.' });
-    console.log(new Date());
-    let events = (await Events.find({end_date: {$gte: new Date()}})).map(ev => {
+    const d = moment.tz(new Date().toISOString(), "America/New_York").toDate();
+    console.log(d);
+    let events = (await Events.find({end_date: {$gte: d}})).map(ev => {
         return ev;
     });
     res.json({
