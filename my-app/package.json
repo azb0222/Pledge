@@ -23,7 +23,6 @@
     "native-base": "^3.4.28",
     "react": "18.2.0",
     "react-native": "0.71.7",
-    "react-native-gesture-handler": "~2.9.0",
     "react-native-image-placeholder": "^1.0.14",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-popover-view": "^5.1.7",
@@ -32,6 +31,7 @@
     "react-native-safe-area-view": "^1.1.1",
     "react-native-skeleton-placeholder-expo": "^5.2.4",
     "react-native-svg": "^13.9.0",
+    "react-native-swipe-gestures": "^1.0.5",
     "react-native-web": "^0.19.4",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
@@ -39,7 +39,8 @@
     "styled-components": "^5.3.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "react-native-gesture-handler": "^2.9.0"
   },
   "private": true
 }

@@ -11,7 +11,7 @@ router.get('/list', async (req, res) => {
     // Simple auth check
     //if (!req.isAuthenticated || !req.hasArtemis) 
     //    return res.status(401).json({ success: false, message: 'You are not authenticated.' });
-    const d = moment.tz(new Date().toISOString(), "America/New_York").toDate();
+    const d = moment.tz(new Date().toISOString(), "America/New_York").add('-4', 'hours').toDate();
     console.log(d);
     let events = (await Events.find({end_date: {$gte: d}})).map(ev => {
         return ev;

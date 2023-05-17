@@ -134,7 +134,7 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
               <Text style={styles.eventCompany}>{formatInTimeZone(
                 new Date(item.start_date), 'GMT', "EEE dd LLL '@' h:mm a")}</Text>
               <Text style={styles.eventAddress}>{item.address}</Text>
-              <Text style={styles.eventAttending}>{"🔥" + item.participants} </Text>
+              <Text style={styles.eventAttending}>{"🔥" + item.participants}</Text>
             </VStack>
             
           </HStack>
@@ -179,7 +179,7 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
       <View style={styles.gapView}>
       </View>
       <FlatList
-        data={refreshing ? [1, 2, 3] : events}
+        data={refreshing ? [...Array(events.length).keys()] : events}
         renderItem={refreshing ? renderPlaceholder : renderItem}
         keyExtractor={(item) => refreshing ? item : item._id}
         refreshControl={<RefreshControl
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     color: '#999',
     fontWeight: 'bold',
-
+    paddingRight: 20,
   },
   eventAttending: {
     fontSize: 13,
