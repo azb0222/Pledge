@@ -7,6 +7,7 @@ import { formatInTimeZone } from 'date-fns-tz'
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder-expo';
 import ImageLoad from 'react-native-image-placeholder';
+import { te } from 'date-fns/locale';
 
 function AttendingEventButton(props) {
   const [attendingEvent, setAttendingEvent] = useState(false);
@@ -21,6 +22,9 @@ function AttendingEventButton(props) {
   }, []);
 
   const updateEvent = (isAttending) => { 
+    props.event.participants += isAttending ? 1 : -1;
+    props.sortEvents()
+    setAttendingEvent(isAttending);
     const url = 'https://pledge.anvil.gg/api/events/' + props.event._id + "/" + (isAttending ? 'attend' : 'unattend')
     console.log(url)
     fetch(url, {
@@ -36,14 +40,18 @@ function AttendingEventButton(props) {
     .then(e => e.json())
     .then(e => {
         console.log(e)
-        props.event.participants += isAttending ? 1 : -1;
-        props.sortEvents()
-        setAttendingEvent(isAttending);
+        
+    })
+    .catch(() => {
+      props.event.participants += !isAttending ? 1 : -1;
+      props.sortEvents()
+      setAttendingEvent(!isAttending);
     });
   }
 
   const handleButtonPress = async () => {
-    props.setIsAnimationPlaying(true); // Update this line
+    if (!attendingEvent)
+      props.changeAnimation(); // Update this line
     const newStatus = !attendingEvent;
 
     await AsyncStorage.setItem(storageKey, newStatus.toString());
@@ -66,9 +74,35 @@ function AttendingEventButton(props) {
 const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
   const [showPopoverId, setShowPopoverId] = useState(null);
   const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
+  const animationProgress = useRef(new Animated.Value(0)).current;
+  const textFadeAnimation = useRef(new Animated.Value(0)).current;
+
+  const fadeText = () => {
+    Animated
+      .timing(textFadeAnimation, {
+        toValue: 1,
+        duration: 4000
+      })
+      .timing(textFadeAnimation, {
+        toValue: 0,
+        duration: 4000
+      })
+      .start();
+  };
 
   const changeAnimation = () => { 
     setIsAnimationPlaying(true)
+    animationProgress.setValue(0);
+    Animated.timing(animationProgress, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start(({finished}) => {
+      if (finished) {
+        setIsAnimationPlaying(false);
+      }
+    });
+    fadeText();
   }
   const renderPlaceholder = () => {
     return (
@@ -111,7 +145,18 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
           source={{ uri: item.header }} 
           style={styles.imageView} 
           loadingStyle={{ size: 'large', color: 'black' }}
-        />
+        >
+          <Animated.View
+            style={[
+              styles.textView,
+              {
+                opacity: textFadeAnimation
+              }
+            ]}
+          >
+            <Text style={styles.imageText}>Hi!</Text>
+          </Animated.View>
+        </ImageLoad>
       </TouchableOpacity>
       {
         showPopoverId &&
@@ -134,31 +179,23 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
               <Text style={styles.eventCompany}>{formatInTimeZone(
                 new Date(item.start_date), 'GMT', "EEE dd LLL '@' h:mm a")}</Text>
               <Text style={styles.eventAddress}>{item.address}</Text>
-              <Text style={styles.eventAttending}>{"🔥" + item.participants} </Text>
+              <Text style={styles.eventAttending}>{"🔥" + item.participants}</Text>
             </VStack>
             
           </HStack>
           <AttendingEventButton
             event={item}
-            setIsAnimationPlaying={setIsAnimationPlaying} // Pass the function
+            changeAnimation={changeAnimation} // Pass the function
             refreshList={refreshList}
             sortEvents={sortEvents}
             refreshing={refreshing}
           />          
         </VStack>        
-        {/* <LottieView
+        { <LottieView
           source={require('./assets/images/sparkle.json')}
-          autoPlay={true}
-          loop={true}
+          progress={animationProgress}
           style={styles.celebrationAnimation}
-          onAnimationFinish={() => {
-            setIsAnimationPlaying(false);
-            console.log('Animation finished'); // Add this line to check if the callback is being executed
-          }}
-          onAnimationLoop{... () => { 
-            console.log('Animation finished'); // Add this line to check if the callback is being executed
-          }}
-        /> */}
+        /> }
       </View>
     </NativeBaseProvider>
   );
@@ -179,7 +216,7 @@ const EventList = ({ events, sortEvents, refreshList, refreshing }) => {
       <View style={styles.gapView}>
       </View>
       <FlatList
-        data={refreshing ? [1, 2, 3] : events}
+        data={refreshing ? [...Array(events.length).keys()] : events}
         renderItem={refreshing ? renderPlaceholder : renderItem}
         keyExtractor={(item) => refreshing ? item : item._id}
         refreshControl={<RefreshControl
@@ -270,7 +307,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#999',
     fontWeight: 'bold',
-
+    paddingRight: 20,
   },
   eventAttending: {
     fontSize: 13,
@@ -288,6 +325,20 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     textAlign: 'center',
+  },
+  textView: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  imageText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

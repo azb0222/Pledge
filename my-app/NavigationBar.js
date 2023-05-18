@@ -21,11 +21,8 @@ const NavigationBarChildComponent = ({ changeFilter, textLabel, isSelected, curr
   );
 };
 
-const NavigationBar = ({ sortEvents }) => {
-  const [filter, setFilter] = useState("🔥 Hot");
-
-  const changeFilter = (filterName) => {
-    setFilter(filterName);
+const NavigationBar = ({ filter, setFilter, sortEvents }) => {
+  const changeFilterInternal = (filterName) => {
     if (filterName === "📅 Today") {
       sortEvents("Today");
     } else if (filterName === "🔥 Hot") {
@@ -33,10 +30,21 @@ const NavigationBar = ({ sortEvents }) => {
     } else if (filterName === "👋 New") {
       sortEvents("New");
     } else {
-      setFilter("🔥 Hot");
+      setFilter("Hot");
       sortEvents("Hot");
     }
   };
+
+  const isFilter = (displayName) => {
+    switch (displayName) {
+      case "📅 Today": return filter === "Today";
+      case "🔥 Hot": return filter === "Hot";
+      case "👋 New": return filter === "New";
+    }
+
+    return false;
+  }
+
 
   return (
     <NativeBaseProvider>
@@ -45,9 +53,9 @@ const NavigationBar = ({ sortEvents }) => {
           {["📅 Today", "🔥 Hot", "👋 New"].map((item) => (
             <NavigationBarChildComponent
               key={item}
-              changeFilter={changeFilter}
+              changeFilter={changeFilterInternal}
               textLabel={item}
-              isSelected={filter === item}
+              isSelected={isFilter(item)}
               currentFilter={filter}
               sortEvents={sortEvents}
             />

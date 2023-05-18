@@ -4,7 +4,9 @@ import NavigationBar from './NavigationBar';
 import { useState, useEffect } from 'react'
 import { VStack, NativeBaseProvider } from 'native-base';
 import { set } from 'date-fns';
+import HGestureRecognizer from './components/hgesturerecognizer';
 
+const filters = ['Today', 'Hot', 'New']
 const App = () => {
   const [refreshing, setRefreshing] = useState(true);
   const [events, setEvents] = useState([]);
@@ -60,6 +62,12 @@ const App = () => {
         break;
       }
 
+      case "New": {
+        const sortedEvents = [...eventList].sort((a, b) => b.added_date - a.added_date);
+        setDisplayedEvents(sortedEvents);
+        break;
+      }
+
       /**
        * This is the default functionality for hot and other stuff.
        * Lets leave it like this for the time being
@@ -71,18 +79,27 @@ const App = () => {
       }
     }
   }; 
+
+  const updateItem = (left) => {
+    sortEvents(filters[Math.max(Math.min(filters.indexOf(filter) + (left ? 1 : -1), filters.length - 1), 0)])
+  }  
   
   return (
     <>
       <NativeBaseProvider>
-        <View style={styles.listBackground}>
-          <VStack>
-          <NavigationBar  sortEvents={sortEvents}/>
+        <HGestureRecognizer
+          onSwipeLeft={() => updateItem(true)}
+          onSwipeRight={() => updateItem(false)}
+        >
+          <View style={styles.listBackground}>
+            <VStack>
+              <NavigationBar filter={filter} setFilter={setFilter} sortEvents={sortEvents}/>
               <View style={styles.listView}>
-              <EventList events={displayedEvents} sortEvents={sortEvents} refreshList={refreshList} refreshing={refreshing}/>
-            </View>
-          </VStack>
-        </View>
+                <EventList events={displayedEvents} sortEvents={sortEvents} refreshList={refreshList} refreshing={refreshing}/>
+              </View>
+            </VStack>
+          </View>
+        </HGestureRecognizer>
       </NativeBaseProvider>
     </>
   );
